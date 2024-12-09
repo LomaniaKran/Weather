@@ -27,7 +27,7 @@ namespace Weather.Controllers
 
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
-        {
+        { 
             Comment? books = Context.Comments.Where(x => x.IdComment == id).FirstOrDefault();
             if (books == null)
             {
