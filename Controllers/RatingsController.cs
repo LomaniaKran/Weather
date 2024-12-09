@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Weather.Contracts.Rating;
 using Weather.Models;
 
 namespace Weather.Controllers
@@ -34,19 +35,30 @@ namespace Weather.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Rating books)
+        public IActionResult Add(RatingCon books)
         {
-            Context.Ratings.Add(books);
+            var user1 = new Rating()
+            {
+                BookId = books.BookId,
+                Rating1 = books.Rating1,
+            };
+            Context.Ratings.Add(user1);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(user1);
         }
 
         [HttpPut]
-        public IActionResult Update(Rating books)
+        public IActionResult Update(RatingCon books)
         {
-            Context.Ratings.Add(books);
+            Rating? userUp = Context.Ratings.Where(x => x.BookId == books.BookId).FirstOrDefault();
+            if (userUp == null)
+            {
+                return BadRequest("Not Found");
+            }
+            userUp.Rating1 = books.Rating1;
+            Context.Ratings.Add(userUp);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(userUp);
         }
 
         [HttpDelete]

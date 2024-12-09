@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Weather.Contracts.DeletedComment;
 using Weather.Models;
 
 namespace Weather.Controllers
@@ -34,19 +35,33 @@ namespace Weather.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(DeletedComment books)
+        public IActionResult Add(DeletedCommentCon books)
         {
-            Context.DeletedComments.Add(books);
+            var user1 = new DeletedComment()
+            {
+                IdComment = books.IdComment,
+                DeletedData = books.DeletedData,
+                DeletedTime = books.DeletedTime,
+            };
+            Context.DeletedComments.Add(user1);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(user1);
         }
 
         [HttpPut]
-        public IActionResult Update(DeletedComment books)
+        public IActionResult Update(DeletedCommentCon books)
         {
-            Context.DeletedComments.Add(books);
+            DeletedComment? userUp = Context.DeletedComments.Where(x => x.IdComment == books.IdComment).FirstOrDefault();
+            if (userUp == null)
+            {
+                return BadRequest("Not Found");
+            }
+            userUp.IdComment = books.IdComment;
+            userUp.DeletedData = books.DeletedData;
+            userUp.DeletedTime = books.DeletedTime;
+            Context.DeletedComments.Add(userUp);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(userUp);
         }
 
         [HttpDelete]

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Xml.Linq;
+using Weather.Contracts.Comment;
 using Weather.Models;
 
 namespace Weather.Controllers
@@ -35,19 +37,41 @@ namespace Weather.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Comment books)
+        public IActionResult Add(CommentCon books)
         {
-            Context.Comments.Add(books);
+            var user1 = new Comment()
+            {
+                BookId = books.BookId,
+                UserId = books.UserId,
+                CrData = books.CrData,
+                CrTime = books.CrTime,
+                ChData = books.ChData,
+                ChTime = books.ChTime,
+                Comment1 = books.Comment1,
+            };
+            Context.Comments.Add(user1);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(user1);
         }
 
         [HttpPut]
-        public IActionResult Update(Comment books)
+        public IActionResult Update(ChCommentCon books)
         {
-            Context.Comments.Add(books);
+            Comment? userUp = Context.Comments.Where(x => x.IdComment == books.IdComment).FirstOrDefault();
+            if (userUp == null)
+            {
+                return BadRequest("Not Found");
+            }
+            userUp.BookId = books.BookId;
+            userUp.UserId = books.UserId;
+            userUp.CrData = books.CrData;
+            userUp.CrTime = books.CrTime;
+            userUp.ChData = books.ChData;
+            userUp.ChTime = books.ChTime;
+            userUp.Comment1 = books.Comment1;
+            Context.Comments.Add(userUp);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(userUp);
         }
 
         [HttpDelete]

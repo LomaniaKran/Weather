@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Weather.Contracts.MiniBooksCover;
 using Weather.Models;
 
 namespace Weather.Controllers
@@ -34,19 +35,30 @@ namespace Weather.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(MiniBooksCover books)
+        public IActionResult Add(MiniBooksCoverCon books)
         {
-            Context.MiniBooksCovers.Add(books);
+            var user1 = new MiniBooksCover()
+            {
+                BookId = books.BookId,
+                MiniCover = books.MiniCover,
+            };
+            Context.MiniBooksCovers.Add(user1);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(user1);
         }
 
         [HttpPut]
-        public IActionResult Update(MiniBooksCover books)
+        public IActionResult Update(MiniBooksCoverCon books)
         {
-            Context.MiniBooksCovers.Add(books);
+            MiniBooksCover? userUp = Context.MiniBooksCovers.Where(x => x.BookId == books.BookId).FirstOrDefault();
+            if (userUp == null)
+            {
+                return BadRequest("Not Found");
+            }
+            userUp.MiniCover = books.MiniCover;
+            Context.MiniBooksCovers.Add(userUp);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(userUp);
         }
 
         [HttpDelete]

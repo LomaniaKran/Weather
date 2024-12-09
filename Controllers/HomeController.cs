@@ -8,6 +8,6 @@ namespace Weather.Controllers
     [Route("[controller]")]
     public class HomeController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
+        
     }
 }

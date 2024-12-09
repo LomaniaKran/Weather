@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Weather.Contracts.Evaluation;
 using Weather.Models;
 
 namespace Weather.Controllers
@@ -34,19 +35,30 @@ namespace Weather.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(Evaluation books)
+        public IActionResult Add(EvaluationCon books)
         {
-            Context.Evaluations.Add(books);
+            var user1 = new Evaluation()
+            {
+                IdComment = books.IdComment,
+                Evaluation1 = books.Evaluation1,
+            };
+            Context.Evaluations.Add(user1);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(user1);
         }
 
         [HttpPut]
-        public IActionResult Update(Evaluation books)
+        public IActionResult Update(EvaluationCon books)
         {
-            Context.Evaluations.Add(books);
+            Evaluation? userUp = Context.Evaluations.Where(x => x.IdComment == books.IdComment).FirstOrDefault();
+            if (userUp == null)
+            {
+                return BadRequest("Not Found");
+            }
+            userUp.Evaluation1 = books.Evaluation1;
+            Context.Evaluations.Add(userUp);
             Context.SaveChanges();
-            return Ok(books);
+            return Ok(userUp);
         }
 
         [HttpDelete]

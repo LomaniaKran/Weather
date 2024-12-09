@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Weather.Contracts.User;
 using Weather.Models;
 
 namespace Weather.Controllers
@@ -34,19 +35,33 @@ namespace Weather.Controllers
         }
 
         [HttpPost]
-        public IActionResult Add(User user)
+        public IActionResult Add(UserContracts user)
         {
-            Context.Users.Add(user);
+            var user1 = new User()
+            {
+                UserLogin = user.UserLogin,
+                UserPassword = user.UserPassword,
+                UserEmail = user.UserEmail,
+            };
+            Context.Users.Add(user1);
             Context.SaveChanges();
-            return Ok(user);
+            return Ok(user1);
         }
 
         [HttpPut]
-        public IActionResult Update(User user)
+        public IActionResult Update(ChUserContracts user)
         {
-            Context.Users.Add(user);
+            User? userUp = Context.Users.Where(x => x.Id == user.Id).FirstOrDefault();
+            if (userUp == null)
+            {
+                return BadRequest("Not Found");
+            }
+            userUp.UserLogin = user.UserLogin;
+            userUp.UserPassword = user.UserPassword;
+            userUp.UserEmail = user.UserEmail;
+            Context.Users.Add(userUp);
             Context.SaveChanges();
-            return Ok(user);
+            return Ok(userUp);
         }
 
         [HttpDelete]
