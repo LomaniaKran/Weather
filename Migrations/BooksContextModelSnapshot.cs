@@ -22,6 +22,7 @@ namespace Weather.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+
             modelBuilder.Entity("Weather.Models.Author", b =>
                 {
                     b.Property<int>("Id")
