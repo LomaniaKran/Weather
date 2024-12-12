@@ -10,7 +10,7 @@ namespace Weather
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<BooksContext>(
-                options => options.UseSqlServer(builder.Configuration["ConnectionStrings"]));
+                options => options.UseSqlServer(builder.Configuration["ConnectionString"]));
 
             // Add services to the container.
 
@@ -21,6 +21,14 @@ namespace Weather
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+
+                var context = services.GetRequiredService<BooksContext>();
+                context.Database.Migrate();
+            }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -28,7 +36,7 @@ namespace Weather
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 
